@@ -9,16 +9,17 @@ import xLogo from "../../assets/images/x_logo.webp";
 import { UserContext } from "../../context/UserProvider";
 import HomeSuggestions from "../../components/sections/HomeSuggestions";
 import MapView from "../../components/map/MapView";
-import { fetchHomeDetails } from "../../api/homeApi";
+import { fetchHomeDetails, fetchUserDetails } from "../../api/homeApi";
 
 import styles from "./home-details.module.scss";
 import HomeImage from "../../components/image/HomeImage";
+import ContactCard from "../../components/cards/home-cards/ContactCard";
 
 export default function HomeDetails() {
     const { homeId } = useParams();
 
     const [homeDetails, setHomeDetails] = useState({});
-    const [visitations, setVisitations] = useState([]);
+    const [userDetails, setUserDetails] = useState({});
     const { user } = useContext(UserContext);
     const navigate = useNavigate();
 
@@ -26,12 +27,22 @@ export default function HomeDetails() {
         fetchHomeDetails(homeId)
             .then((resp) => resp.json())
             .then((json) => {
-                setHomeDetails(json.home_details);
-                setVisitations(json.visitations);
+                setHomeDetails(json);
             });
     };
 
+    const getUserDetail = () => {
+        if(user.accessToken){
+        fetchUserDetails(user.accessToken)
+        .then((data) => {
+            setUserDetails(data);
+        });
+       }
+    };
+
     useEffect(getHomeDetails, [homeId]);
+
+    useEffect(getUserDetail, [user]);
 
     const handleChatClick = () => {
         if (!user.token) {
@@ -54,47 +65,16 @@ export default function HomeDetails() {
     const handleRequestView = () => {
         navigate(`/meeting/${homeDetails.owner_id}/${homeDetails.id}`);
     };
-
     return (
         <section className={styles.homeDetails}>
             <section className={styles.topSection}>
                 <article className={styles.imagesContainer}>
                     <article className="property-image-container">
-                        <HomeImage src={homeDetails.photo_url} />
+                        <HomeImage src={homeDetails.photo_url ?? "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"} />
                     </article>
                 </article>
 
-                <article className={styles.mapAndButtons}>
-                    {homeDetails.latitude && homeDetails.longitude && (
-                        <MapView
-                            latitude={homeDetails.latitude}
-                            longitude={homeDetails.longitude}
-                        />
-                    )}
-                    <article>
-                        <button
-                            type="button"
-                            className={styles.contact}
-                            onClick={handleRequestView}
-                        >
-                            REQUEST VIEW
-                        </button>
-                    </article>
-                    <article>
-                        <button
-                            type="button"
-                            className={styles.contact}
-                            onClick={handleChatClick}
-                        >
-                            CHAT WITH SELLER
-                        </button>
-                    </article>
-                    <article>
-                        <button type="button" className={styles.favorites}>
-                            ADD TO FAVORITES
-                        </button>
-                    </article>
-                </article>
+                <ContactCard info={userDetails && userDetails}/>
 
                 {/* <div className="home-details-image-container">
                     <img
@@ -154,44 +134,52 @@ export default function HomeDetails() {
                         <table className={styles.overviewTable}>
                             <tbody>
                                 <tr>
-                                    <td>City</td>
-                                    <td>{homeDetails.city}</td>
+                                    <td>District</td>
+                                    <td>{homeDetails.region && homeDetails.region?.ward?.district?.name}</td>
                                 </tr>
                                 <tr>
-                                    <td>Neighborhood</td>
-                                    <td>{homeDetails.neighborhood}</td>
+                                    <td>Ward</td>
+                                    <td>{homeDetails && homeDetails.region?.ward?.name}</td>
                                 </tr>
                                 <tr>
                                     <td>Address</td>
-                                    <td>{homeDetails.address}</td>
+                                    <td>{homeDetails && homeDetails.address}</td>
                                 </tr>
                                 <tr>
                                     <td>Area</td>
-                                    <td>{homeDetails.area}</td>
+                                    <td>{homeDetails && homeDetails.area}</td>
                                 </tr>
                                 <tr>
                                     <td>Price</td>
-                                    <td>{homeDetails.price}</td>
+                                    <td>{homeDetails && homeDetails.price}</td>
                                 </tr>
                                 <tr>
                                     <td>Bedrooms</td>
-                                    <td>{homeDetails.bedrooms}</td>
+                                    <td>{homeDetails && homeDetails.bedrooms}</td>
                                 </tr>
                                 <tr>
                                     <td>Bathrooms</td>
-                                    <td>{homeDetails.bathrooms}</td>
+                                    <td>{homeDetails && homeDetails.bathrooms}</td>
                                 </tr>
                                 <tr>
-                                    <td>Garages</td>
-                                    <td>{homeDetails.garages}</td>
+                                    <td>Furnishing</td>
+                                    <td>{homeDetails && homeDetails.furnishing ? 'Có' : 'Không'}</td>
                                 </tr>
                                 <tr>
-                                    <td>Year Build</td>
-                                    <td>{homeDetails.year}</td>
+                                    <td>Tình trạng pháp lý</td>
+                                    <td>{homeDetails && homeDetails.legal_status ? 'Sổ hồng' : 'Chưa có sổ'}</td>
                                 </tr>
                                 <tr>
-                                    <td>Views</td>
-                                    <td>{homeDetails.home_views}</td>
+                                    <td>Chuyên mục tin rao</td>
+                                    <td>{homeDetails && homeDetails.category?.length ? homeDetails.category?.map(item => item.name) : 'Khong co'}</td>
+                                </tr>
+                                <tr>
+                                    <td>Loại tin rao</td>
+                                    <td>{homeDetails && homeDetails.category?.length ? homeDetails.type?.map(item => item.name) : 'Khong co'}</td>
+                                </tr>
+                                <tr>
+                                    <td>Hướng nhà</td>
+                                    <td>{homeDetails && homeDetails.orientation}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -200,7 +188,7 @@ export default function HomeDetails() {
                     <article>
                         <h2>Description</h2>
                         <hr />
-                        <p>{homeDetails.description}</p>
+                        <p>{homeDetails && homeDetails.description}</p>
                     </article>
                 </article>
                 <article className={styles.share}>

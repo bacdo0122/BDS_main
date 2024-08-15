@@ -8,6 +8,7 @@ import HomeCard from '../../components/cards/home-cards/HomeCard';
 
 import './AllHomes.scss';
 import './Homes.scss';
+import axios from 'axios';
 
 const searchValuesInitialState = {
     city: '',
@@ -17,15 +18,17 @@ const searchValuesInitialState = {
 };
 
 export default function AllHomes() {
-    const [pageNumber, setPageNumber] = useState(0);
+    const [pageNumber, setPageNumber] = useState(1);
     const queryClient = useQueryClient();
     const homesPerPage = 10;
     const [isLongLoading, setIsLongLoading] = useState(false);
     const [searchValues, setSearchValues] = useState(searchValuesInitialState);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState(null);
 
     const { data, isPlaceholderData, isLoading } = useQuery({
         queryKey: ['homes', pageNumber],
-        queryFn: () => fetchAllHomes(),
+        queryFn: () => fetchAllHomes(pageNumber),
         placeholderData: keepPreviousData,
         staleTime: 5000,
     });
@@ -34,12 +37,11 @@ export default function AllHomes() {
     const homesToDisplay = searchResult.length > 0
         ? searchResult
         : homes
-
     useEffect(() => {
         if (!isPlaceholderData) {
             queryClient.prefetchQuery({
                 queryKey: ['homes', pageNumber + 1],
-                queryFn: () => fetchPaginatedHomes(pageNumber + 1, homesPerPage),
+                queryFn: () => fetchAllHomes(pageNumber + 1),
             });
         }
     }, [data, isPlaceholderData, pageNumber, queryClient]);
@@ -59,7 +61,59 @@ export default function AllHomes() {
         };
     }, [isLoading]);
 
+    useEffect(() => {
+        const fetchDistrict = async () => {
+            try {
+                const res = await axios.get("http://localhost:3000/ward?page=1&limit=10000");
+                if (res.data?.data.length > 0) {
+                    setWards(res.data.data);
+                }
+
+                const resDistrict = await axios.get("http://localhost:3000/district?page=1&limit=10000");
+                if (resDistrict.data?.data.length > 0) {
+                    setDistricts(resDistrict.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching wards:', error);
+            }
+        };
+        fetchDistrict();
+    }, [])
+
+    useEffect(() => {
+        const fetchDistrict = async () => {
+            try {
+                const resDistrict = await axios.get("http://localhost:3000/district?page=1&limit=10000");
+                console.log("esDistrict.data?.data:", resDistrict.data?.data)
+                if (resDistrict.data?.data.length > 0) {
+                    setDistricts(resDistrict.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching wards:', error);
+            }
+        };
+        fetchDistrict();
+    }, [])
+
+    useEffect(() => {
+        const fetchSearchDistrict = async () => {
+            try {
+                const resDistrict = await axios.get("http://localhost:3000/district?page=1&limit=10000");
+                if(resDistrict.data?.data.length > 0 && searchValues.neighborhood){
+                    setDistricts(resDistrict.data?.data.filter(district => district.ward.find(item => item.name === searchValues.neighborhood)));
+                } 
+                if(resDistrict.data?.data.length > 0 && searchValues.neighborhood === 'Search Ward'){
+                    setDistricts(resDistrict.data.data);
+                }
+            } catch (error) {
+                
+            }
+        }
+        fetchSearchDistrict();
+    }, [searchValues.neighborhood])
+
     const handleSearchChange = (e) => {
+        console.log(e.target.name, e.target.value)
         setSearchValues({
             ...searchValues,
             [e.target.name]: e.target.value,
@@ -80,46 +134,74 @@ export default function AllHomes() {
         );
     }
 
+
     function handleSubmitResult(e) {
         e.preventDefault();
-        const holeData = homes;
-        const filteredByCity = searchValues.city 
-            ? holeData.filter((home) => home.city.toLowerCase().includes(searchValues.city.toLowerCase()))
-            : holeData
-        const filteredByNeighborhood = searchValues.neighborhood
-            ? filteredByCity.filter((home) => home.neighborhood.toLowerCase().includes(searchValues.neighborhood.toLowerCase()))
+        const holeData = [...data];
+        console.log("holeData:", holeData, searchValues)
+        const filteredByNeighborhood = searchValues.neighborhood.length && searchValues.neighborhood !== 'Search Ward'
+            ? holeData.filter((home) => home.region.ward.name.toLowerCase() == searchValues.neighborhood.toLowerCase())
+            : holeData;
+            console.log("filteredByNeighborhood:", filteredByNeighborhood)
+        const filteredByCity = searchValues.city.length && searchValues.city !== 'Search District'
+            ? filteredByNeighborhood.filter((home) => home.region.ward.district.name.toLowerCase() == searchValues.city.toLowerCase())
+            : (filteredByNeighborhood)
+            console.log("filteredByCity:", filteredByCity)
+        const filteredLowerPrice = searchValues.minPrice.length
+            ? filteredByCity.filter((home) => parseFloat(home.price) >= searchValues.minPrice)
             : filteredByCity;
-        const filteredLowerPrice = searchValues.minPrice
-            ? filteredByNeighborhood.filter((home) => home.price >= searchValues.minPrice)
-            : filteredByNeighborhood;
-        const filteredBymaxPrice =  searchValues.maxPrice
-            ? filteredLowerPrice.filter((home) => home.price < Number(searchValues.maxPrice))
+        const filteredBymaxPrice =  searchValues.maxPrice.length
+            ? filteredLowerPrice.filter((home) => parseFloat(home.price) < Number(searchValues.maxPrice))
             : filteredLowerPrice;
 
-        const finalFiltered = filteredBymaxPrice;
+            const filteredBySortBy =  searchValues.sortBy !== 'None'
+            ? filteredBymaxPrice.sort((a, b) => {
+                if(searchValues.sortBy  === 'Price_Inc'){
+                   return a.price - b.price
+                } else if(searchValues.sortBy  === 'Price_Dec'){
+                    return b.price - a.price
+                } else if(searchValues.sortBy  === 'Title'){
+                    return a.title - b.title
+                }
+            })
+            : filteredBymaxPrice;
+
+        const finalFiltered = filteredBySortBy;
         console.log(finalFiltered);
       
-        setSearchResult(finalFiltered);
+        setSearchResult(finalFiltered.length ? finalFiltered : []);
     }
 
     return (
         <section className="main-container">
             <section className="home-search">
                 <form onSubmit={handleSubmitResult}>
-                    <input
+                    <select name="neighborhood" value={searchValues.neighborhood} onChange={handleSearchChange}>
+                    <option >Search Ward</option>
+                        {wards && wards.map(ward => {
+                            return <option id={ward.name}>{ward.name}</option>
+                        })}
+                    </select>
+                    <select name="city" value={searchValues.city}  onChange={handleSearchChange}>
+                    <option >Search District</option>
+                        {districts && districts.map(district => {
+                            return <option id={district.name}>{district.name}</option>
+                        })}
+                    </select>
+                    {/* <input
                         name="city"
-                        placeholder="City"
+                        placeholder="District"
                         value={searchValues.city}
                         type="text"
                         onChange={handleSearchChange}
-                    />
-                    <input
+                    /> */}
+                    {/* <input
                         name="neighborhood"
-                        placeholder="Neighborhood"
+                        placeholder="Ward"
                         value={searchValues.neighborhood}
                         type="text"
                         onChange={handleSearchChange}
-                    />
+                    /> */}
                     <input
                         name="minPrice"
                         placeholder="Min. Price"
@@ -134,10 +216,13 @@ export default function AllHomes() {
                         type="text"
                         onChange={handleSearchChange}
                     />
-                    <select name="sortBy">
-                        <option value="">Sort by</option>
+                    <select name="sortBy"  onChange={handleSearchChange}>
+                        <option value="None">Sort by</option>
+                        <option value="Price_Inc">Price Inc</option>
+                        <option value="Price_Dec">Price Dec</option>
+                        <option value="Title">Title</option>
                     </select>
-                    <button>Search</button>
+                    <button id='Search_btn'>Search</button>
                 </form>
             </section>
             <section className="homes-list-container">
@@ -145,7 +230,7 @@ export default function AllHomes() {
                     <HomeCard
                         key={home.id}
                         homeId={home.id}
-                        photoUrl={home.photo_url}
+                        photoUrl={home.photo_url ?? "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"}
                         city={home.city}
                         neighborhood={home.neighborhood}
                         title={home.title}
@@ -155,27 +240,24 @@ export default function AllHomes() {
                 ))}
             </section>
 
-            <section style={{ display: 'flex', alignItems: 'center' }}>
-                <button
-                    type="button"
-                    onClick={() => {
-                        setPageNumber((old) => Math.max(old - 1, 0));
-                        scrollTo(0, 0);
-                    }}
-                    disabled={pageNumber === 0}
-                >
+            <div className="pagination-container">
+                <button type="button"  onClick={() => {
+                        if(pageNumber !== 1){
+                            setPageNumber((old) => Math.max((old) - 1, 0));
+                            scrollTo(0, 0);
+
+                        }
+                    }} disabled={pageNumber === 1}>
                     Previous
                 </button>
-                <article>Current page: {pageNumber + 1}</article>
-                <button
-                    onClick={() => {
+                <div className="current-page">Current page: {pageNumber}</div>
+                <button type="button"  onClick={() => {
                         setPageNumber((old) => old + 1);
                         scrollTo(0, 0);
-                    }}
-                >
+                    }}>
                     Next
                 </button>
-            </section>
+            </div>
             <ReactQueryDevtools initialIsOpen />
         </section>
     );

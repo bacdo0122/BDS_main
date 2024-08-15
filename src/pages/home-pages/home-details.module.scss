@@ -8,6 +8,8 @@ $page-background: $fifth-color;
     flex-direction: row;
     flex-wrap: nowrap;
     margin-bottom: 36px;
+    justify-content: space-between;
+    gap: 10%;
 }
 
 .homeDetails {

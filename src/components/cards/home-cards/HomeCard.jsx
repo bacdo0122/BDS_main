@@ -13,7 +13,7 @@ const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, pr
 
             <section className='grid-card-container'>
                 <article className="property-price-container">
-                    <h5 className="property-price">{price}</h5>
+                    <h5 className="property-price">{price} VND</h5>
                 </article>
 
                 <article className="property-info">

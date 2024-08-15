@@ -6,11 +6,11 @@ export const HOME_API = axios.create({
     baseURL: `${hostUrl}`,
 });
 
-export const fetchAllHomes = () => {
-    return fetch(`${hostUrl}/homes`)
+export const fetchAllHomes = (pageNumber) => {
+    return fetch(`${hostUrl}/listing?page=${pageNumber}&limit=12`)
         .then((resp) => resp.json())
         .then((json) => {
-            return json;
+            return json.data;
         });
 };
 
@@ -35,6 +35,27 @@ export const postHome = async (homeInfo, userId) => {
 };
 
 export const fetchHomeDetails = async (homeId) => {
-    const resp = await fetch(`${hostUrl}/home-details/${homeId}`);
+    const resp = await fetch(`${hostUrl}/listing/getOne?id=${homeId}`);
+    return resp;
+};
+
+export const fetchUserDetails = async (accessToken) => {
+    const resp = await fetch(`${hostUrl}/user`, {
+        method: 'GET', // hoặc 'POST' tùy thuộc vào yêu cầu của API
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json' // nếu cần thiết, tùy thuộc vào API
+        }
+    });
+    // Kiểm tra nếu yêu cầu thành công, sau đó chuyển đổi phản hồi thành JSON
+    if (!resp.ok) {
+        throw new Error(`HTTP error! Status: ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    return data;
+};
+export const fetchProperty = async () => {
+    const resp = await fetch(`${hostUrl}/listing?page=1&limit=1000`);
     return resp;
 };
