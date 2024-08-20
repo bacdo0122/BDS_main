@@ -4,7 +4,7 @@ import HomeImage from '../../image/HomeImage';
 
 import './HomeCard.scss';
 
-const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, price, isDetailImage = true }) => {
+const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, price, isDetailImage = false }) => {
     return (
         <article className="property-card">
             <article className="property-image-container">

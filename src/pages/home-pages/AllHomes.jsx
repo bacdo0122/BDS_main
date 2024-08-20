@@ -24,7 +24,7 @@ export default function AllHomes() {
     const queryClient = useQueryClient();
     const homesPerPage = 10;
     const location = useLocation();
-    const typeQuery = location.pathname === '/all-rent' ? 'rent' : 'sell'
+    const typeQuery = location.pathname === '/all-rent' ? 1 : 2
     const [isLongLoading, setIsLongLoading] = useState(false);
     const [searchValues, setSearchValues] = useState(searchValuesInitialState);
     const [districts, setDistricts] = useState([]);
@@ -32,7 +32,7 @@ export default function AllHomes() {
     const [wards, setWards] = useState(null);
 
     const { data, isPlaceholderData, isLoading } = useQuery({
-        queryKey: ['homes', pageNumber],
+        queryKey: ['homes', pageNumber, typeQuery],
         queryFn: () => fetchAllHomes(pageNumber, typeQuery),
         placeholderData: keepPreviousData,
         staleTime: 5000,

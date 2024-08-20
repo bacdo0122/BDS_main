@@ -19,7 +19,10 @@ import Meeting from "./pages/Meeting";
 import GridLearn from "./pages/GridLearn";
 import MeetingsScheduler from "./pages/MeetingsScheduler";
 import PostListing from "./pages/PostLising";
-import ForgotPassword from './pages/user/ForgotPassword'
+import ForgotPassword from './pages/user/ForgotPassword';
+import UserProfile from './pages/user/Profile';
+import NewsPage from './pages/NewPage';
+import NewsDetail from './pages/NewDetail'
 import "./App.scss";
 import "leaflet/dist/leaflet.css";
 
@@ -57,6 +60,11 @@ function App() {
                             <Route path="/grid" element={<GridLearn />} />
                             <Route path="/post-listing" element={<PostListing />} />
                             <Route path="/forgotPassword" element={<ForgotPassword />} />
+                            <Route path="/profile" element={<UserProfile />} />
+                            <Route path="/news" >
+                                <Route path="" element={<NewsPage />} />
+                                <Route path=":id" element={<NewsDetail />} />
+                            </Route>
                         </Routes>
                         <ToastContainer />
                     </main>

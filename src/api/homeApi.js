@@ -7,7 +7,7 @@ export const HOME_API = axios.create({
 });
 
 export const fetchAllHomes = (pageNumber, type) => {
-    return fetch(`${hostUrl}/listing?page=${pageNumber}&limit=12`)
+    return fetch(`${hostUrl}/listing?page=${pageNumber}&limit=12&type_id=${type}`)
         .then((resp) => resp.json())
         .then((json) => {
             return json.data;

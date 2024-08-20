@@ -2,7 +2,6 @@ import React from 'react';
 import './ContactCard.scss'; // Đường dẫn tới file CSS
 import zaloImage from "../../../assets/images/zalo.png";
 const ContactCard = ({info}) => {
-  console.log("info:", info)
   return (
     <div className="contact-card">
       <h3>Liên hệ người đăng</h3>

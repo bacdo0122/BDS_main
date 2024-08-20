@@ -9,8 +9,7 @@ import styles from "./header.module.scss";
 
 const UserNav = ({ handleLinkClick }) => {
     const { user, setUser } = useContext(UserContext);
-    const isAuthenticated = !!user.token;
-
+    const isAuthenticated = !!user.accessToken;
     const handleLogOut = () => {
         setUser({});
         localStorage.removeItem("user");

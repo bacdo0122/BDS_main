@@ -18,7 +18,6 @@ import HomeCard from "../../components/cards/home-cards/HomeCard";
 
 export default function HomeDetails() {
     const { homeId } = useParams();
-    console.log(123);
     const [homeDetails, setHomeDetails] = useState({
         id: 1,
         region: {
@@ -75,6 +74,7 @@ export default function HomeDetails() {
         fetchHomeDetails(homeId)
             .then((resp) => resp.json())
             .then((json) => {
+                // console.log(json)
                 setHomeDetails(json);
             });
     };
@@ -88,9 +88,10 @@ export default function HomeDetails() {
        }
     };
 
-    // useEffect(getHomeDetails, [homeId]);
+    useEffect(getUserDetail, [user]);
+    
+    useEffect(getHomeDetails, [homeId]);
 
-    // useEffect(getUserDetail, [user]);
 
     const handleChatClick = () => {
         if (!user.token) {
@@ -113,6 +114,7 @@ export default function HomeDetails() {
     const handleRequestView = () => {
         navigate(`/meeting/${homeDetails.owner_id}/${homeDetails.id}`);
     };
+    console.log("homeDetails:", homeDetails )
     return (
         <section className={styles.homeDetails}>
             <section className={styles.topSection}>
