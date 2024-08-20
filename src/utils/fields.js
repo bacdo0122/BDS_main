@@ -159,6 +159,19 @@ export const SIGNIN_FIELDS = [
     },
 ];
 
+export const FORGOTPASSWORD_FIELDS = [
+    {
+        labelName: "Email",
+        name: "email",
+        type: "email",
+    },
+    {
+        labelName: "Password",
+        name: "password",
+        type: "password",
+    },
+];
+
 export const VISITATION_FIELDS = [
     { labelName: "Date", name: "date", type: "date" },
     { labelName: "Start hour", name: "start_hour", type: "time" },

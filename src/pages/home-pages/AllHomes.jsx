@@ -9,9 +9,11 @@ import HomeCard from '../../components/cards/home-cards/HomeCard';
 import './AllHomes.scss';
 import './Homes.scss';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const searchValuesInitialState = {
     city: '',
+    direction: '',
     neighborhood: '',
     minPrice: '',
     maxPrice: '',
@@ -21,14 +23,17 @@ export default function AllHomes() {
     const [pageNumber, setPageNumber] = useState(1);
     const queryClient = useQueryClient();
     const homesPerPage = 10;
+    const location = useLocation();
+    const typeQuery = location.pathname === '/all-rent' ? 'rent' : 'sell'
     const [isLongLoading, setIsLongLoading] = useState(false);
     const [searchValues, setSearchValues] = useState(searchValuesInitialState);
     const [districts, setDistricts] = useState([]);
+    const [directions, setDirections] = useState([]);
     const [wards, setWards] = useState(null);
 
     const { data, isPlaceholderData, isLoading } = useQuery({
         queryKey: ['homes', pageNumber],
-        queryFn: () => fetchAllHomes(pageNumber),
+        queryFn: () => fetchAllHomes(pageNumber, typeQuery),
         placeholderData: keepPreviousData,
         staleTime: 5000,
     });
@@ -84,7 +89,6 @@ export default function AllHomes() {
         const fetchDistrict = async () => {
             try {
                 const resDistrict = await axios.get("http://localhost:3000/district?page=1&limit=10000");
-                console.log("esDistrict.data?.data:", resDistrict.data?.data)
                 if (resDistrict.data?.data.length > 0) {
                     setDistricts(resDistrict.data.data);
                 }
@@ -93,6 +97,20 @@ export default function AllHomes() {
             }
         };
         fetchDistrict();
+    }, [])
+
+    useEffect(() => {
+        const fetchDirection = async () => {
+            try {
+                const resDirections = await axios.get("http://localhost:3000/direction?page=1&limit=10000");
+                if (resDirections.data?.data.length > 0) {
+                    setDirections(resDirections.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching wards:', error);
+            }
+        };
+        fetchDirection();
     }, [])
 
     useEffect(() => {
@@ -147,9 +165,13 @@ export default function AllHomes() {
             ? filteredByNeighborhood.filter((home) => home.region.ward.district.name.toLowerCase() == searchValues.city.toLowerCase())
             : (filteredByNeighborhood)
             console.log("filteredByCity:", filteredByCity)
+        const filteredByDirection = searchValues.direction.length && searchValues.direction !== 'Search Direction'
+        ? filteredByCity.filter((home) => home.direction.name.toLowerCase() == searchValues.direction.toLowerCase())
+        : (filteredByCity)
+        console.log("filteredByDirection:", filteredByDirection)
         const filteredLowerPrice = searchValues.minPrice.length
-            ? filteredByCity.filter((home) => parseFloat(home.price) >= searchValues.minPrice)
-            : filteredByCity;
+            ? filteredByDirection.filter((home) => parseFloat(home.price) >= searchValues.minPrice)
+            : filteredByDirection;
         const filteredBymaxPrice =  searchValues.maxPrice.length
             ? filteredLowerPrice.filter((home) => parseFloat(home.price) < Number(searchValues.maxPrice))
             : filteredLowerPrice;
@@ -186,6 +208,13 @@ export default function AllHomes() {
                     <option >Search District</option>
                         {districts && districts.map(district => {
                             return <option id={district.name}>{district.name}</option>
+                        })}
+                    </select>
+
+                    <select name="direction" value={searchValues.direction}  onChange={handleSearchChange}>
+                    <option >Search Direction</option>
+                        {directions && directions.map(direction => {
+                            return <option id={direction.name}>{direction.name}</option>
                         })}
                     </select>
                     {/* <input
@@ -230,7 +259,7 @@ export default function AllHomes() {
                     <HomeCard
                         key={home.id}
                         homeId={home.id}
-                        photoUrl={home.photo_url ?? "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"}
+                        photoUrl={home.image && home.image.length > 0 ? home.image.split(';')[0] : "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"}
                         city={home.city}
                         neighborhood={home.neighborhood}
                         title={home.title}

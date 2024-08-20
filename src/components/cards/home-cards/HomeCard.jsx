@@ -4,11 +4,13 @@ import HomeImage from '../../image/HomeImage';
 
 import './HomeCard.scss';
 
-const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, price }) => {
+const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, price, isDetailImage = true }) => {
     return (
         <article className="property-card">
             <article className="property-image-container">
-                <HomeImage src={photoUrl} />
+            <Link to={`/home-details/${homeId}`}>
+                {isDetailImage ? <HomeImage src={photoUrl} /> : <img src={photoUrl} alt="Home" />}
+            </Link>
             </article>
 
             <section className='grid-card-container'>
@@ -17,7 +19,9 @@ const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, pr
                 </article>
 
                 <article className="property-info">
+                <Link to={`/home-details/${homeId}`}>
                     <h3 className="property-info-title">{title}</h3>
+                </Link>
                 </article>
 
                 <article className="property-address">
@@ -31,9 +35,9 @@ const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, pr
                     <p>{description}</p>
                 </article>
 
-                <article className="property-card-footer">
+                {/* <article className="property-card-footer">
                     <Link to={`/home-details/${homeId}`}>View Details</Link>
-                </article>
+                </article> */}
             </section>
         </article>
     );

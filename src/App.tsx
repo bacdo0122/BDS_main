@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
-
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import LandingPage from "./pages/LandingPage";
@@ -17,7 +18,8 @@ import Chat from "./pages/Chat";
 import Meeting from "./pages/Meeting";
 import GridLearn from "./pages/GridLearn";
 import MeetingsScheduler from "./pages/MeetingsScheduler";
-
+import PostListing from "./pages/PostLising";
+import ForgotPassword from './pages/user/ForgotPassword'
 import "./App.scss";
 import "leaflet/dist/leaflet.css";
 
@@ -32,7 +34,8 @@ function App() {
                     <main>
                         <Routes>
                             <Route path="/" element={<LandingPage />} />
-                            <Route path="/all-homes" element={<AllHomes />} />
+                            <Route path="/all-sell" element={<AllHomes />} />
+                            <Route path="/all-rent" element={<AllHomes />} />
                             <Route
                                 path="/create-home"
                                 element={<CreateHome />}
@@ -52,6 +55,8 @@ function App() {
                             <Route path="/signup" element={<SignUp />} />
                             <Route path="/rent" element={<Rent />} />
                             <Route path="/grid" element={<GridLearn />} />
+                            <Route path="/post-listing" element={<PostListing />} />
+                            <Route path="/forgotPassword" element={<ForgotPassword />} />
                         </Routes>
                         <ToastContainer />
                     </main>

@@ -37,12 +37,12 @@ const UserNav = ({ handleLinkClick }) => {
         <>
             <li>
                 <Link onClick={handleLinkClick} to="/signin">
-                    Sign In
+                    Đăng nhập
                 </Link>
             </li>
             <li>
                 <Link onClick={handleLinkClick} to="/signup">
-                    Sign Up
+                    Đăng ký
                 </Link>
             </li>
         </>
@@ -66,27 +66,15 @@ const UserNav = ({ handleLinkClick }) => {
 const SellLink = ({ onLinkClick }) => {
     const { user } = useContext(UserContext);
     const role = user.role;
-    const isSeller = role === ROLES_ENUM.seller;
 
-    const navigateTo = isSeller ? "/create-home" : "/";
 
-    const handleLinkClick = () => {
-        if (!isSeller) {
-            toast.error("You have to be registered as seller to Sell!", {
-                autoClose: 3000,
-                pauseOnHover: false,
-            });
-        }
-        onLinkClick();
-    };
 
     return (
         <Link
-            onClick={handleLinkClick}
             data-testid="sell-home-link"
-            to={navigateTo}
+            to='/all-sell'
         >
-            Sell
+            Nhà đất bán
         </Link>
     );
 };
@@ -109,7 +97,7 @@ export default function Header() {
     return (
         <header className={styles.header}>
             <article className={styles.siteName}>
-                <Link to="/">REAL ESTATE</Link>
+                <Link to="/">THÁI NGUYÊN</Link>
             </article>
             <article
                 className={styles.hamburger}
@@ -121,7 +109,7 @@ export default function Header() {
             </article>
             <nav className={navBarClassName}>
                 <ul>
-                    <li>
+                    {/* <li>
                         <Link
                             onClick={handleLinkClick}
                             className={styles.active}
@@ -129,21 +117,26 @@ export default function Header() {
                         >
                             Buy
                         </Link>
-                    </li>
+                    </li> */}
                     <li>
                         <SellLink onLinkClick={handleLinkClick} />
                     </li>
                     <li>
-                        <Link onClick={handleLinkClick} to="/rent">
-                            Rent
+                        <Link onClick={handleLinkClick} to="/all-rent">
+                        Nhà đất cho thuê
                         </Link>
                     </li>
                     <li>
                         <Link onClick={handleLinkClick} to="/news">
-                            News
+                            Tin tức
                         </Link>
                     </li>
                     <UserNav handleLinkClick={handleLinkClick} />
+                    <li>
+                        <Link onClick={handleLinkClick} to="/post-listing">
+                            Đăng tin rao
+                        </Link>
+                    </li>
                 </ul>
             </nav>
         </header>

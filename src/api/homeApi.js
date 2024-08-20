@@ -6,7 +6,7 @@ export const HOME_API = axios.create({
     baseURL: `${hostUrl}`,
 });
 
-export const fetchAllHomes = (pageNumber) => {
+export const fetchAllHomes = (pageNumber, type) => {
     return fetch(`${hostUrl}/listing?page=${pageNumber}&limit=12`)
         .then((resp) => resp.json())
         .then((json) => {

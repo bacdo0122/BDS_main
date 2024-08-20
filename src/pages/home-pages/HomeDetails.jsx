@@ -14,11 +14,59 @@ import { fetchHomeDetails, fetchUserDetails } from "../../api/homeApi";
 import styles from "./home-details.module.scss";
 import HomeImage from "../../components/image/HomeImage";
 import ContactCard from "../../components/cards/home-cards/ContactCard";
+import HomeCard from "../../components/cards/home-cards/HomeCard";
 
 export default function HomeDetails() {
     const { homeId } = useParams();
+    console.log(123);
+    const [homeDetails, setHomeDetails] = useState({
+        id: 1,
+        region: {
+            id: 1
+        },
+        title: 'haha',
+        description: '11',
+        image: 
+        'https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://media.batdongsan.vn/posts/116895_66c3edd2ba199.jpg'
 
-    const [homeDetails, setHomeDetails] = useState({});
+    });
+    const [sameTypeProperty, setSameTypeProperty] = useState(
+        [
+        {
+            id: 1,
+            region: {
+                id: 1
+            },
+            title: 'haha1',
+            description: '11444',
+            image: 
+            'https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://media.batdongsan.vn/posts/116895_66c3edd2ba199.jpg'
+    
+        },
+        {
+            id: 2,
+            region: {
+                id: 1
+            },
+            title: 'haha2',
+            description: '11333',
+            image: 
+            'https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://media.batdongsan.vn/posts/116895_66c3edd2ba199.jpg'
+    
+        },
+        {
+            id: 3,
+            region: {
+                id: 1
+            },
+            title: 'haha12',
+            description: '11222',
+            image: 
+            'https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww;https://media.batdongsan.vn/posts/116895_66c3edd2ba199.jpg'
+    
+        }
+]
+)
     const [userDetails, setUserDetails] = useState({});
     const { user } = useContext(UserContext);
     const navigate = useNavigate();
@@ -40,9 +88,9 @@ export default function HomeDetails() {
        }
     };
 
-    useEffect(getHomeDetails, [homeId]);
+    // useEffect(getHomeDetails, [homeId]);
 
-    useEffect(getUserDetail, [user]);
+    // useEffect(getUserDetail, [user]);
 
     const handleChatClick = () => {
         if (!user.token) {
@@ -70,7 +118,7 @@ export default function HomeDetails() {
             <section className={styles.topSection}>
                 <article className={styles.imagesContainer}>
                     <article className="property-image-container">
-                        <HomeImage src={homeDetails.photo_url ?? "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"} />
+                        <HomeImage src={homeDetails.image ?? homeDetails.image} />
                     </article>
                 </article>
 
@@ -139,11 +187,11 @@ export default function HomeDetails() {
                                 </tr>
                                 <tr>
                                     <td>Ward</td>
-                                    <td>{homeDetails && homeDetails.region?.ward?.name}</td>
+                                    <td>{homeDetails.region && homeDetails.region?.ward?.name}</td>
                                 </tr>
                                 <tr>
                                     <td>Address</td>
-                                    <td>{homeDetails && homeDetails.address}</td>
+                                    <td>{homeDetails.address && homeDetails.address}</td>
                                 </tr>
                                 <tr>
                                     <td>Area</td>
@@ -192,14 +240,23 @@ export default function HomeDetails() {
                     </article>
                 </article>
                 <article className={styles.share}>
-                    <h2>Share</h2>
+                    <h2>Bất động sản dành cho bạn </h2>
                     <hr />
-                    <button>
-                        <img src={facebookLogo} alt="" />
-                    </button>
-                    <button>
-                        <img src={xLogo} alt="" />
-                    </button>
+                    <section className="homes-list-container">
+                    {sameTypeProperty.map((home) => (
+                        <HomeCard
+                            key={home.id}
+                            homeId={home.id}
+                            photoUrl={home.image && home.image.length > 0 ? home.image.split(';')[0] : "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"}
+                            city={home.city}
+                            neighborhood={home.neighborhood}
+                            title={home.title}
+                            description={home.description}
+                            price={home.price}
+                            isDetailImage={false}
+                        />
+                    ))}
+                    </section>
                 </article>
             </section>
 

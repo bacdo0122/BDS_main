@@ -1,0 +1,4 @@
+.card-media:hover {
+    transform: scale(1)!important;
+    opacity: 1!important;
+}

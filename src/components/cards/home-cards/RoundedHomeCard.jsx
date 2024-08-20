@@ -23,7 +23,7 @@ export default function RoundedHomeCard({
                 <article className={styles.extraDescriptionTownContainer}>
                     <span className={styles.extraDescriptionTown}>{city}</span>
                 </article>
-                <h2 className={styles.extraDescriptionTitle}>{title}</h2>
+                <h2 className={styles.extraDescriptionTitle} >{title}</h2>
                 <p className={styles.extraDescriptionNeighborhood}>
                     {neighborhood}
                 </p>
