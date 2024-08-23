@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import "slick-carousel/slick/slick.css"; 
@@ -22,9 +22,10 @@ import PostListing from "./pages/PostLising";
 import ForgotPassword from './pages/user/ForgotPassword';
 import UserProfile from './pages/user/Profile';
 import NewsPage from './pages/NewPage';
-import NewsDetail from './pages/NewDetail'
+import NewsDetail from './pages/NewDetail';
 import "./App.scss";
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
@@ -33,45 +34,58 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <UserProvider>
                 <BrowserRouter>
-                    <Header />
-                    <main>
-                        <Routes>
-                            <Route path="/" element={<LandingPage />} />
-                            <Route path="/all-sell" element={<AllHomes />} />
-                            <Route path="/all-rent" element={<AllHomes />} />
-                            <Route
-                                path="/create-home"
-                                element={<CreateHome />}
-                            />
-                            <Route path="/edit-home" element={<EditHome />} />
-                            <Route path="/home-details">
-                                <Route path=":homeId" element={<HomeDetails />} />
-                            </Route>
-                            <Route path="/chat">
-                                <Route path=":chatPartnerId" element={<Chat />} />
-                            </Route>
-                            <Route path="/meeting">
-                                <Route path=":meetingPartnerId/:homeId" element={<Meeting />} />
-                            </Route>
-                            <Route path="/meetings-scheduler" element={<MeetingsScheduler />} />
-                            <Route path="/signin" element={<SignIn />} />
-                            <Route path="/signup" element={<SignUp />} />
-                            <Route path="/rent" element={<Rent />} />
-                            <Route path="/grid" element={<GridLearn />} />
-                            <Route path="/post-listing" element={<PostListing />} />
-                            <Route path="/forgotPassword" element={<ForgotPassword />} />
-                            <Route path="/profile" element={<UserProfile />} />
-                            <Route path="/news" >
-                                <Route path="" element={<NewsPage />} />
-                                <Route path=":id" element={<NewsDetail />} />
-                            </Route>
-                        </Routes>
-                        <ToastContainer />
-                    </main>
-                    <Footer />
+                    <MainApp />
                 </BrowserRouter>
             </UserProvider>
         </QueryClientProvider>
+    );
+}
+
+function MainApp() {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if(location.pathname === '/'){
+            navigate('/all-sell');
+        }
+    }, [location.pathname, navigate]);
+
+    return (
+        <>
+            <Header />
+            <main>
+                <Routes>
+                    <Route path="/all-sell" element={<AllHomes />} />
+                    <Route path="/all-rent" element={<AllHomes />} />
+                    <Route path="/create-home" element={<CreateHome />} />
+                    <Route path="/edit-home" element={<EditHome />} />
+                    <Route path="/home-details">
+                        <Route path=":homeId" element={<HomeDetails />} />
+                    </Route>
+                    <Route path="/chat">
+                        <Route path=":chatPartnerId" element={<Chat />} />
+                    </Route>
+                    <Route path="/meeting">
+                        <Route path=":meetingPartnerId/:homeId" element={<Meeting />} />
+                    </Route>
+                    <Route path="/meetings-scheduler" element={<MeetingsScheduler />} />
+                    <Route path="/signin" element={<SignIn />} />
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/rent" element={<Rent />} />
+                    <Route path="/grid" element={<GridLearn />} />
+                    <Route path="/post-listing" element={<PostListing />} />
+                    <Route path="/forgotPassword" element={<ForgotPassword />} />
+                    <Route path="/profile" element={<UserProfile />} />
+                    <Route path="/news" >
+                        <Route path="" element={<NewsPage />} />
+                        <Route path=":id" element={<NewsDetail />} />
+                    </Route>
+                </Routes>
+                <ToastContainer />
+            </main>
+            <Footer />
+        </>
     );
 }
 

@@ -15,6 +15,7 @@ import styles from "./home-details.module.scss";
 import HomeImage from "../../components/image/HomeImage";
 import ContactCard from "../../components/cards/home-cards/ContactCard";
 import HomeCard from "../../components/cards/home-cards/HomeCard";
+import { Box, Chip, Grid, Typography } from "@mui/material";
 
 export default function HomeDetails() {
     const { homeId } = useParams();
@@ -178,62 +179,45 @@ export default function HomeDetails() {
 
             <section className={styles.middleSection}>
                 <article className={styles.homeInfo}>
-                    <article>
-                        <h2>Overview</h2>
-                        <hr />
-                        <table className={styles.overviewTable}>
-                            <tbody>
-                                <tr>
-                                    <td>District</td>
-                                    <td>{homeDetails.region && homeDetails.region?.ward?.district?.name}</td>
-                                </tr>
-                                <tr>
-                                    <td>Ward</td>
-                                    <td>{homeDetails.region && homeDetails.region?.ward?.name}</td>
-                                </tr>
-                                <tr>
-                                    <td>Address</td>
-                                    <td>{homeDetails.address && homeDetails.address}</td>
-                                </tr>
-                                <tr>
-                                    <td>Area</td>
-                                    <td>{homeDetails && homeDetails.area}</td>
-                                </tr>
-                                <tr>
-                                    <td>Price</td>
-                                    <td>{homeDetails && homeDetails.price}</td>
-                                </tr>
-                                <tr>
-                                    <td>Bedrooms</td>
-                                    <td>{homeDetails && homeDetails.bedrooms}</td>
-                                </tr>
-                                <tr>
-                                    <td>Bathrooms</td>
-                                    <td>{homeDetails && homeDetails.bathrooms}</td>
-                                </tr>
-                                <tr>
-                                    <td>Furnishing</td>
-                                    <td>{homeDetails && homeDetails.furnishing ? 'Có' : 'Không'}</td>
-                                </tr>
-                                <tr>
-                                    <td>Tình trạng pháp lý</td>
-                                    <td>{homeDetails && homeDetails.legal_status ? 'Sổ hồng' : 'Chưa có sổ'}</td>
-                                </tr>
-                                <tr>
-                                    <td>Chuyên mục tin rao</td>
-                                    <td>{homeDetails && homeDetails.category?.length ? homeDetails.category?.map(item => item.name) : 'Khong co'}</td>
-                                </tr>
-                                <tr>
-                                    <td>Loại tin rao</td>
-                                    <td>{homeDetails && homeDetails.category?.length ? homeDetails.type?.map(item => item.name) : 'Khong co'}</td>
-                                </tr>
-                                <tr>
-                                    <td>Hướng nhà</td>
-                                    <td>{homeDetails && homeDetails.orientation}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </article>
+                <Box 
+      sx={{
+        border: '1px solid #e0e0e0',
+        padding: 2,
+        maxWidth: 600,
+        fontFamily: 'Arial, sans-serif'
+      }}
+    >
+      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
+        <Chip label="Cho thuê" />
+        <Chip label="Hà Nội" />
+        <Chip label="Đông Anh" />
+        <Chip label="Kho, nhà xưởng, đất tại xã Nguyên Khê" />
+      </Box>
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+        Cho Thuê Kho Xưởng 400m² Tại Nguyên Khê, Đường Lô Góc, Vị Trí Đắc Địa, Đa Dạng Ngành Nghề
+      </Typography>
+      <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+        Xã Nguyên Khê, Đông Anh, Hà Nội
+      </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Typography variant="body2" color="textSecondary">
+            Mức giá
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            40 triệu/tháng
+          </Typography>
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="body2" color="textSecondary">
+            Diện tích
+          </Typography>
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+            1.400 m²
+          </Typography>
+        </Grid>
+      </Grid>
+    </Box>
 
                     <article>
                         <h2>Description</h2>
@@ -256,6 +240,7 @@ export default function HomeDetails() {
                             description={home.description}
                             price={home.price}
                             isDetailImage={false}
+                            {...home}
                         />
                     ))}
                     </section>

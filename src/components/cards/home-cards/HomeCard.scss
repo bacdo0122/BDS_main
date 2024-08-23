@@ -62,3 +62,47 @@
         max-width: 100%;
     }
 }
+
+.property-card-info {
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .price-area {
+    font-weight: bold;
+    color: #d9534f;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .price {
+    font-size: 1.5em;
+  }
+  
+  .area, .price-per-area {
+    font-size: 1em;
+    color: #666;
+  }
+  
+  .details {
+    display: flex;
+    gap: 10px;
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+  }
+  
+  .divider {
+    color: #999;
+  }
+  
+  .description {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #333;
+  }
+
+  .main-container{
+    width: 70%;
+  }

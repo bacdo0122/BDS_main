@@ -10,6 +10,7 @@ import './AllHomes.scss';
 import './Homes.scss';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
+import HotPropertiesList from '../../components/cards/home-cards/HotCard';
 
 const searchValuesInitialState = {
     city: '',
@@ -156,19 +157,15 @@ export default function AllHomes() {
     function handleSubmitResult(e) {
         e.preventDefault();
         const holeData = [...data];
-        console.log("holeData:", holeData, searchValues)
         const filteredByNeighborhood = searchValues.neighborhood.length && searchValues.neighborhood !== 'Search Ward'
             ? holeData.filter((home) => home.region.ward.name.toLowerCase() == searchValues.neighborhood.toLowerCase())
             : holeData;
-            console.log("filteredByNeighborhood:", filteredByNeighborhood)
         const filteredByCity = searchValues.city.length && searchValues.city !== 'Search District'
             ? filteredByNeighborhood.filter((home) => home.region.ward.district.name.toLowerCase() == searchValues.city.toLowerCase())
             : (filteredByNeighborhood)
-            console.log("filteredByCity:", filteredByCity)
         const filteredByDirection = searchValues.direction.length && searchValues.direction !== 'Search Direction'
         ? filteredByCity.filter((home) => home.direction.name.toLowerCase() == searchValues.direction.toLowerCase())
         : (filteredByCity)
-        console.log("filteredByDirection:", filteredByDirection)
         const filteredLowerPrice = searchValues.minPrice.length
             ? filteredByDirection.filter((home) => parseFloat(home.price) >= searchValues.minPrice)
             : filteredByDirection;
@@ -193,8 +190,9 @@ export default function AllHomes() {
       
         setSearchResult(finalFiltered.length ? finalFiltered : []);
     }
-
     return (
+        <>
+        <div className="main_card">
         <section className="main-container">
             <section className="home-search">
                 <form onSubmit={handleSubmitResult}>
@@ -265,11 +263,15 @@ export default function AllHomes() {
                         title={home.title}
                         description={home.description}
                         price={home.price}
+                        {...home}
                     />
                 ))}
             </section>
 
-            <div className="pagination-container">
+        </section>
+        <HotPropertiesList properties={data}/>
+        </div>
+        <div className="pagination-container">
                 <button type="button"  onClick={() => {
                         if(pageNumber !== 1){
                             setPageNumber((old) => Math.max((old) - 1, 0));
@@ -288,6 +290,6 @@ export default function AllHomes() {
                 </button>
             </div>
             <ReactQueryDevtools initialIsOpen />
-        </section>
+        </>
     );
 }

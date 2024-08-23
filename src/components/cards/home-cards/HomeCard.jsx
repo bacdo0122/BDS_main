@@ -1,10 +1,15 @@
 import { Link } from 'react-router-dom';
 import { HiMiniMapPin } from "react-icons/hi2";
 import HomeImage from '../../image/HomeImage';
-
+import BedIcon from '@mui/icons-material/Bed';
+import BathtubIcon from '@mui/icons-material/Bathtub';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CropSquareIcon from '@mui/icons-material/CropSquare';
 import './HomeCard.scss';
+import { Box, Typography } from '@mui/material';
 
-const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, price, isDetailImage = false }) => {
+const HomeCard = ({ homeId, photoUrl, title, description, price, 
+    isDetailImage = false, address, bathrooms, bedrooms, pricePerArea, area}) => {
     return (
         <article className="property-card">
             <article className="property-image-container">
@@ -13,32 +18,71 @@ const HomeCard = ({ homeId, photoUrl, city, neighborhood, title, description, pr
             </Link>
             </article>
 
-            <section className='grid-card-container'>
-                <article className="property-price-container">
-                    <h5 className="property-price">{price} VND</h5>
-                </article>
+            <Box 
+      sx={{ 
+        borderRadius: '8px', 
+        padding: '16px', 
+        marginBottom: '16px',
+        maxWidth: '500px'
+      }}
+    >
+      {/* Title */}
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          fontWeight: 'bold', 
+          marginBottom: '8px' 
+        }}
+      >
+       {title}
+      </Typography>
 
-                <article className="property-info">
-                <Link to={`/home-details/${homeId}`}>
-                    <h3 className="property-info-title">{title}</h3>
-                </Link>
-                </article>
+      {/* Price and Size */}
+      <Typography 
+        variant="h5" 
+        sx={{ 
+          color: '#d32f2f', 
+          fontWeight: 'bold', 
+          marginBottom: '8px' 
+        }}
+      >
+        {price} tỷ • {area} m² • {pricePerArea} tr/m²
+      </Typography>
 
-                <article className="property-address">
-                    <HiMiniMapPin color='#8d8741'/>
-                    <div className="property-address-field">
-                        {city}, {neighborhood}
-                    </div>
-                </article>
+      {/* Icons for Details */}
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          marginBottom: '8px' 
+        }}
+      >
+        <BedIcon sx={{ color: '#666', marginRight: '4px' }} />
+        <Typography sx={{ marginRight: '16px' }}>{bedrooms}</Typography>
+        
+        <BathtubIcon sx={{ color: '#666', marginRight: '4px' }} />
+        <Typography sx={{ marginRight: '16px' }}>{bathrooms}</Typography>
 
-                <article className="description-card">
-                    <p>{description}</p>
-                </article>
+      </Box>
 
-                {/* <article className="property-card-footer">
-                    <Link to={`/home-details/${homeId}`}>View Details</Link>
-                </article> */}
-            </section>
+      {/* Location */}
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          alignItems: 'center' 
+        }}
+      >
+        <LocationOnIcon sx={{ color: '#666', marginRight: '4px' }} />
+        <Typography sx={{ color: '#666' }}>
+          {address}
+        </Typography>
+      </Box>
+
+      {/* Short Description */}
+      <Typography sx={{ marginTop: '8px' }}>
+        {title}
+      </Typography>
+    </Box>
         </article>
     );
 };
