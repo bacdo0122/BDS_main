@@ -98,6 +98,7 @@ export default function SignIn() {
                         handleOnChange={handleOnChange}
                         validationError={validationErrors[sf.name]}
                         dataTestId={sf.name}
+                        typePage="SignIn_FIELDS"
                     />
                 ))}
                 submitButton={

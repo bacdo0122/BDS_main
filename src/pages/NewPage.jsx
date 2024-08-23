@@ -1,4 +1,5 @@
 import React from 'react';
+import NewsCategories from '../components/news/NewsCategory';
 
 const newsArticles = [
   {
@@ -29,8 +30,10 @@ const newsArticles = [
 
 const NewsPage = () => {
   return (
+    <div style={{display: 'flex'}}>
+    <NewsCategories />
     <div style={styles.container}>
-      <h1 style={styles.title}>Real Estate News</h1>
+      <h1 style={styles.title}>Tin tức bất động sản</h1>
       {newsArticles.map(article => (
         <div key={article.id} style={styles.article}>
             <a href={`/news/${article.id}`}>
@@ -39,9 +42,10 @@ const NewsPage = () => {
             </a>
           <p style={styles.date}>{article.date}</p>
           <p>{article.excerpt}</p>
-          <a href={`/news/${article.id}`} style={styles.readMore}>Read More</a>
+          <a href={`/news/${article.id}`} style={styles.readMore}>Xem thêm</a>
         </div>
       ))}
+    </div>
     </div>
   );
 };
@@ -51,6 +55,7 @@ const styles = {
     padding: '20px',
     maxWidth: '800px',
     margin: '0 auto',
+    flex: 1
   },
   title: {
     textAlign: 'center',

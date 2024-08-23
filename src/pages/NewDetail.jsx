@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import NewsCategories from '../components/news/NewsCategory';
 
 const newsArticles = [
   {
@@ -35,6 +36,8 @@ const NewsDetail = () => {
   }
 
   return (
+    <div style={{display: 'flex'}}>
+    <NewsCategories />
     <div style={styles.container}>
       <h1 style={styles.title}>{article.title}</h1>
       <p style={styles.date}>{article.date}</p>
@@ -42,6 +45,7 @@ const NewsDetail = () => {
       {article.content.split('\n').map((paragraph, index) => (
         <p key={index} style={styles.content}>{paragraph}</p>
       ))}
+    </div>
     </div>
   );
 };

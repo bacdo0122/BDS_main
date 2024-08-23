@@ -129,17 +129,11 @@ export default function SignUp() {
                         handleOnChange={handleOnChange}
                         validationError={validationErrors[uf.name]}
                         dataTestId={uf.name}
+                        typePage="SignUp_FIELDS"
                     />
                 ))}
                 submitButton={<FormSubmitButton text="Register" />}
                 formHeaderText="Registration Form"
-                checkboxComponent={
-                    <FormCheckbox
-                        onCheckboxChange={handleCheckboxChange}
-                        dataTestId="as-seller"
-                        text="Sign Up as seller"
-                    />
-                }
             />
         </AuthSection>
     );

@@ -35,7 +35,7 @@ const properties = [
   },
 ];
 
-function HotPropertiesList({properties}) {
+function HotPropertiesList({properties, type}) {
   return (
     <Box sx={{ padding: '16px', flex: 1, marginTop: '4%' }}>
           <Typography 
@@ -45,10 +45,10 @@ function HotPropertiesList({properties}) {
           color: '#fff'
         }}
       >
-       Danh sách các bất động sản đang hot hiện nay
+        {type === 1 ? 'Danh sách các bất động sản đang cho thuê hot hiện nay' : `Danh sách các bất động sản đang bán hot hiện nay`}
       </Typography>
       <Grid container spacing={2}>
-        {properties.map((property) => (
+        {properties.slice(0, 4).map((property) => (
           <Grid item xs={12} key={property.id}>
             <Card sx={{ display: 'flex' }}>
               <CardMedia
@@ -85,7 +85,9 @@ function HotPropertiesList({properties}) {
           marginBottom: '8px' 
         }}
       >
-        {property.price} tỷ • {property.area} m² • {property.pricePerArea} tr/m²
+  {type === 2 ? `${property.price} tỷ • ${property.area} m² • ${property.pricePerArea} tr/m²`: 
+   `${property.price} tr/tháng • ${property.area} m²`}
+
       </Typography>
 
       {/* Icons for Details */}

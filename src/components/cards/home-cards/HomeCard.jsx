@@ -8,7 +8,7 @@ import CropSquareIcon from '@mui/icons-material/CropSquare';
 import './HomeCard.scss';
 import { Box, Typography } from '@mui/material';
 
-const HomeCard = ({ homeId, photoUrl, title, description, price, 
+const HomeCard = ({ type, homeId, photoUrl, title, description, price, 
     isDetailImage = false, address, bathrooms, bedrooms, pricePerArea, area}) => {
     return (
         <article className="property-card">
@@ -46,7 +46,8 @@ const HomeCard = ({ homeId, photoUrl, title, description, price,
           marginBottom: '8px' 
         }}
       >
-        {price} tỷ • {area} m² • {pricePerArea} tr/m²
+        {type === 2 ? `${price} tỷ • ${area} m² • ${pricePerArea} tr/m²`:  `${price} tr/tháng • ${area} m²`}
+
       </Typography>
 
       {/* Icons for Details */}
