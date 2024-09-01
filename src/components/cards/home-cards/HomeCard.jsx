@@ -10,11 +10,12 @@ import { Box, Typography } from '@mui/material';
 
 const HomeCard = ({ type, homeId, photoUrl, title, description, price, 
     isDetailImage = false, address, bathrooms, bedrooms, pricePerArea, area}) => {
+      console.log("type:", type)
     return (
         <article className="property-card">
             <article className="property-image-container">
             <Link to={`/home-details/${homeId}`}>
-                {isDetailImage ? <HomeImage src={photoUrl} /> : <img src={photoUrl} alt="Home" />}
+                {isDetailImage ? <HomeImage src={photoUrl} /> : <img src={`http://localhost:3000/images/${photoUrl}`} alt="Home" />}
             </Link>
             </article>
 
@@ -46,7 +47,8 @@ const HomeCard = ({ type, homeId, photoUrl, title, description, price,
           marginBottom: '8px' 
         }}
       >
-        {type === 2 ? `${price} tỷ • ${area} m² • ${pricePerArea} tr/m²`:  `${price} tr/tháng • ${area} m²`}
+         {type.id === 2 ? `${price} tỷ • ${area} m² • ${pricePerArea} tr/m²`: 
+   `${price} tr/tháng • ${area} m²`}
 
       </Typography>
 

@@ -25,10 +25,10 @@ export default function SignIn() {
     const logIn = async () => {
         try {
             const response = await fetchUserLogIn(loginInfo);
-            console.log(response)
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem("user", JSON.stringify(data));
+                console.log("data:", data)
                 setUser(data);
                 navigate("/");
             } else {

@@ -12,12 +12,8 @@ export const fetchUserLogIn = async (loginInfo) => {
     return response;
 };
 
-export const createUser = async (postBody, isSeller) => {
-    const urlPath = isSeller
-        ? "user/register-seller"
-        : "user/register-user";
-
-    const response = await fetch(`${hostUrl}/${urlPath}`, {
+export const createUser = async (postBody) => {
+    const response = await fetch(`http://localhost:3000/user/create`, {
         method: "POST",
         body: JSON.stringify(postBody),
         headers: {

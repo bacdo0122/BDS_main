@@ -9,7 +9,6 @@ export default function UserProfile()  {
         if(user.accessToken){
         fetchUserDetails(user.accessToken)
         .then((data) => {
-            console.log("data:", data)
             setUserDetails(data);
         });
        }
@@ -22,6 +21,7 @@ export default function UserProfile()  {
       <div style={styles.infoContainer}>
         <p><strong>Name:</strong> {userDetails.name}</p>
         <p><strong>Email:</strong> {userDetails.email}</p>
+        <p><strong>Phone Number:</strong> {userDetails.phone_number}</p>
         <p><strong>Image:</strong> <img src={userDetails.avatar}></img></p>
       </div>
     </div>

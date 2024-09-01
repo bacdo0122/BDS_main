@@ -16,10 +16,7 @@ const ContactCard = ({info}) => {
       <p id="a">Đã sẵn sàng tư vấn cho bạn</p>
       <div className="contact-numbers">
         <a href="tel:0936782752" className="contact-button">
-          <i className="fa fa-phone"></i> 0936782752
-        </a>
-        <a href="tel:0783434991" className="contact-button">
-          <i className="fa fa-phone"></i> 0783434991
+          <i className="fa fa-phone"></i> {info.phone_number}
         </a>
       </div>
       <div className="zalo-button">

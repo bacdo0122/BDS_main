@@ -5,7 +5,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import LandingPage from "./pages/LandingPage";
 import { UserProvider } from "./context/UserProvider";
 import AllHomes from "./pages/home-pages/AllHomes";
 import HomeDetails from "./pages/home-pages/HomeDetails";
@@ -18,7 +17,6 @@ import Chat from "./pages/Chat";
 import Meeting from "./pages/Meeting";
 import GridLearn from "./pages/GridLearn";
 import MeetingsScheduler from "./pages/MeetingsScheduler";
-import PostListing from "./pages/PostLising";
 import ForgotPassword from './pages/user/ForgotPassword';
 import UserProfile from './pages/user/Profile';
 import NewsPage from './pages/NewPage';
@@ -26,6 +24,7 @@ import NewsDetail from './pages/NewDetail';
 import "./App.scss";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
+import PostListing from "./pages/PostLising.jsx";
 
 const queryClient = new QueryClient();
 
@@ -78,8 +77,8 @@ function MainApp() {
                     <Route path="/forgotPassword" element={<ForgotPassword />} />
                     <Route path="/profile" element={<UserProfile />} />
                     <Route path="/news" >
-                        <Route path="" element={<NewsPage />} />
-                        <Route path=":id" element={<NewsDetail />} />
+                        <Route path=":newCategoryId" element={<NewsPage />} />
+                        <Route path="getDetails/:id" element={<NewsDetail />} />
                     </Route>
                 </Routes>
                 <ToastContainer />

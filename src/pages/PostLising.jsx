@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -13,16 +13,34 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { fetchAllTypes } from '../api/homeApi';
 const PostListing = () => {
   const [bedrooms, setBedrooms] = useState(1);
   const [bathrooms, setBathrooms] = useState(1);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [types, setTypes] = useState([]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event) => {
     if (event.target.files) {
       setSelectedFiles([...event.target.files]);
     }
   };
+
+  const getTypes = () => {
+    fetchAllTypes()
+          .then((json) => {
+            console.log("json:", json)
+            setTypes(json);
+          });
+  }; 
+
+  
+  useEffect(() => {
+    getTypes()
+  }, [])
+
+
+  console.log("types:", types)
   return (
     <Box sx={{ maxWidth: 800, margin: "auto", padding: 2, color: "#fff" }}>
       {/* Thông tin cơ bản */}
@@ -37,20 +55,14 @@ const PostListing = () => {
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel style={{ color: "#fff" }}>Loại bất động sản</InputLabel>
           <Select label="Loại bất động sản">
-            <MenuItem value="nha_rieng">Nhà riêng</MenuItem>
-            <MenuItem value="can_ho">Căn hộ</MenuItem>
+            {types.length > 0 && types.map(item => {
+              return <MenuItem value={item.name}>{item.description}</MenuItem>
+            })}
           </Select>
         </FormControl>
 
         {/* Địa chỉ */}
         <Box sx={{ display: "flex", gap: 2 }}>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel style={{ color: "#fff" }}>Tỉnh, thành phố</InputLabel>
-            <Select label="Tỉnh, thành phố">
-              <MenuItem value="ha_noi">Hà Nội</MenuItem>
-              <MenuItem value="ho_chi_minh">Hồ Chí Minh</MenuItem>
-            </Select>
-          </FormControl>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel style={{ color: "#fff" }}>Quận, huyện</InputLabel>
             <Select label="Quận, huyện">
@@ -58,21 +70,11 @@ const PostListing = () => {
               <MenuItem value="dong_da">Đống Đa</MenuItem>
             </Select>
           </FormControl>
-        </Box>
-
-        <Box sx={{ display: "flex", gap: 2 }}>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel style={{ color: "#fff" }}>Phường, xã</InputLabel>
             <Select label="Phường, xã">
               <MenuItem value="dich_vong">Dịch Vọng</MenuItem>
               <MenuItem value="nghia_do">Nghĩa Đô</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel style={{ color: "#fff" }}>Đường, phố</InputLabel>
-            <Select label="Đường, phố">
-              <MenuItem value="tran_thai_tong">Trần Thái Tông</MenuItem>
-              <MenuItem value="nguyen_khang">Nguyễn Khang</MenuItem>
             </Select>
           </FormControl>
         </Box>

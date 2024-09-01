@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NewsCategories from '../components/news/NewsCategory';
+import { fetchNews, fetchNewsCategory, fetchNewsDetails } from '../api/homeApi';
 
 const newsArticles = [
   {
@@ -30,21 +31,55 @@ const newsArticles = [
 
 const NewsDetail = () => {
   const { id } = useParams();
-  const article = newsArticles.find(article => article.id === parseInt(id));
-  if (!article) {
+  const [news, setNews] = useState({});
+  const [newsCategory, setNewsCategory] = useState([]);
+  const [newCategoryId, setNewCategoryId] = useState(0);
+
+  const handleChangeCategory = useCallback((id) => {
+    setNewCategoryId(id);
+  }, [newsCategory])
+
+  const getNewsCategory = () => {
+    fetchNewsCategory()
+          .then((resp) => resp.json())
+          .then((json) => {
+            setNewsCategory(json.data);
+          });
+  };
+  useEffect(()=>{
+    getNewsCategory()
+  }, [])
+
+  const getNews = () => {
+    fetchNewsDetails(id)
+          .then((resp) => resp.json())
+          .then((json) => {
+            console.log("json:", json)
+            setNews(json);
+          });
+  };
+  useEffect(() => {
+    getNews();
+  }, [])
+
+
+  if (!news) {
     return <p>Article not found!</p>;
   }
-
+  console.log("news:", news)
   return (
     <div style={{display: 'flex'}}>
-    <NewsCategories />
+    <NewsCategories newsCategory={newsCategory} handleChangeCategory={handleChangeCategory}/>
     <div style={styles.container}>
-      <h1 style={styles.title}>{article.title}</h1>
-      <p style={styles.date}>{article.date}</p>
-      <img src={article.imageUrl} alt={article.title} style={styles.image} />
-      {article.content.split('\n').map((paragraph, index) => (
+      <h1 style={styles.title}>{news.title}</h1>
+      <p style={styles.date}>{news.createAt}</p>
+      <img src={`http://localhost:3000/images/${news.image.split(';')[0]}` || 'https://media.batdongsan.vn/crop/200x150/news/94551cadb4ef5db104fe.jpg'} alt={news.title} style={styles.image} />
+      <span>
+      {news.content?.split('\n').map((paragraph, index) => (
         <p key={index} style={styles.content}>{paragraph}</p>
       ))}
+
+      </span>
     </div>
     </div>
   );
@@ -53,13 +88,13 @@ const NewsDetail = () => {
 const styles = {
   container: {
     padding: '20px',
-    maxWidth: '800px',
+    maxWidth: '1200px',
     margin: '0 auto',
   },
   title: {
     fontSize: '2.5rem',
     marginBottom: '20px',
-    color: '#333',
+    color:'#fff',
   },
   date: {
     color: '#777',
@@ -75,6 +110,9 @@ const styles = {
   content: {
     lineHeight: '1.6',
     fontSize: '1.2rem',
+    color:'#fff',
+    marginBottom: '10px',
+    wordWrap: 'break-word',
   },
 };
 

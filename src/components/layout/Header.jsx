@@ -123,7 +123,7 @@ export default function Header() {
                         </Link>
                     </li>
                     <li>
-                        <Link onClick={handleLinkClick} to="/news" style={location.pathname === '/news' ? {color: "#fff", background: "#3D52A0"} : {}}>
+                        <Link onClick={handleLinkClick} to="/news/all" style={location.pathname.includes('/news') ? {color: "#fff", background: "#3D52A0"} : {}}>
                             Tin tức
                         </Link>
                     </li>

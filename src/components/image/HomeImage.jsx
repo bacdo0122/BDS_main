@@ -3,9 +3,8 @@ import defaultHomeImage from "../../assets/images/home-main-photo-example.jpg";
 import ImageThumbnail from "./ImageThumbnail";
 import RoomView from "./RoomView";
 
-const HomeImage = ({ src }) => {
+const HomeImage = ({ src, page }) => {
     const images = useMemo(() => src.split(';'), [src]);
-    console.log("src:", images)
     // const images = [
     //     '/path-to-image1.png',
     //     '/path-to-image2.png',
@@ -27,12 +26,12 @@ const HomeImage = ({ src }) => {
     return (
         <div>
             <RoomView
-                images={images}
+                images={images.map(item => `http://localhost:3000/images/${item}`)}
                 onPrev={handlePrev}
                 onNext={handleNext}
                 currentImage={currentImage}
             />
-            <ImageThumbnail images={images} onClick={setCurrentImage} />
+            {page === 'details' && <ImageThumbnail images={images && images.map(item => `http://localhost:3000/images/${item}`)} onClick={setCurrentImage} />}
         </div>
     );
 };

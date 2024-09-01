@@ -48,12 +48,12 @@ export const HOME_FIELDS = [
 
 export const USER_FIELDS = [
     {
-        labelName: "First Name",
+        labelName: "Họ",
         name: "first_name",
         type: "text",
     },
     {
-        labelName: "Last Name",
+        labelName: "Tên",
         name: "last_name",
         type: "text",
     },
@@ -63,17 +63,17 @@ export const USER_FIELDS = [
         type: "email",
     },
     {
-        labelName: "Phone number",
+        labelName: "Số điện thoại",
         name: "phone_number",
         type: "text",
     },
     {
-        labelName: "Password",
+        labelName: "Mật khẩu",
         name: "password",
         type: "password",
     },
     {
-        labelName: "Confirm Password",
+        labelName: "Xác nhận mật khẩu",
         name: "confirmPassword",
         type: "password",
     },

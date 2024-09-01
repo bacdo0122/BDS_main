@@ -18,7 +18,16 @@ export default function InputFormRow({
             <input type={type} name={name} value={value || ''} onChange={handleOnChange} data-testid={dataTestId} />
             {validationError && <p className={styles.validationError} data-testid={`valerror-${dataTestId}`} data-tooltip={validationError}></p>}
         </article>
-        {(name === 'password' && typePage !== 'FORGOTPASSWORD_FIELDS' && typePage !== 'SignUp_FIELDS') && <div className={styles.forgotPassword}> <Link to="/">quên mật khẩu?</Link></div> }
+        {(name === 'password' && typePage !== 'FORGOTPASSWORD_FIELDS' && typePage !== 'SignUp_FIELDS') && 
+      <>
+        <div className={styles.forgotPassword}>
+             <Link to="/">quên mật khẩu?</Link>
+             </div>
+             <div className={styles.forgotPassword}> Chưa có tài khoản? 
+             <Link to="/signup" style={{marginLeft: '10px', color: "#fff"}}>Đăng ký</Link>
+             </div>
+      </>
+              }
             </>
     );
 }

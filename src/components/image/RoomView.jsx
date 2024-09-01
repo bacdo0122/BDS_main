@@ -22,7 +22,7 @@ const RoomView = ({ images, onPrev, onNext, currentImage }) => {
         }
     }, [currentImage]);
     return (
-        <Card>
+        <Card style={{maxHeight: "700px"}}>
             <Slider {...settings} ref={sliderRef}>
                 {images.map((image, index) => (
                     <img

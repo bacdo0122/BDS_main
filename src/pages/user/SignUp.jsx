@@ -10,7 +10,7 @@ import FormSubmitButton from "../../components/form/FormSubmitButton";
 import { ROLES_ENUM } from "../../utils/enums";
 import FormComponent from "../../components/form/FormComponent";
 import FormCheckbox from "../../components/form/FormCheckbox";
-import { createUser } from "../../api/userApi";
+import { createUser, fetchUserLogIn } from "../../api/userApi";
 import { createUserPostBody } from "../../utils/utils";
 import AuthSection from "../../components/sections/AuthSection";
 
@@ -33,19 +33,31 @@ export default function SignUp() {
         try {
             const json = await createUser(
                 postBody,
-                userInfo.role === ROLES_ENUM.seller
             );
             const newUserInfo = {
                 ...json,
                 role: userInfo.role,
             };
-            localStorage.setItem("user", JSON.stringify(newUserInfo));
-            setUser(newUserInfo);
-            navigate("/");
-            toast.success("Successful Sign up!", {
-                autoClose: 3000,
-                pauseOnHover: false,
+            const response = await fetchUserLogIn({
+                email: json.email,
+                password:json.password
             });
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem("user", JSON.stringify(data));
+                setUser(data);
+                navigate("/");
+                toast.success("Successful Sign up!", {
+                    autoClose: 3000,
+                    pauseOnHover: false,
+                });
+            } else {
+                const data = await response.json()
+                toast.error("Incorrect email or password!", {
+                    autoClose: 3000,
+                    pauseOnHover: false,
+                });
+            } 
         } catch (err) {
             toast.error(`Something went wrong! ${err}`, {
                 autoClose: 3000,
@@ -132,8 +144,8 @@ export default function SignUp() {
                         typePage="SignUp_FIELDS"
                     />
                 ))}
-                submitButton={<FormSubmitButton text="Register" />}
-                formHeaderText="Registration Form"
+                submitButton={<FormSubmitButton text="Đăng ký" />}
+                formHeaderText="Đăng ký"
             />
         </AuthSection>
     );

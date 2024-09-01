@@ -5,6 +5,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import BedIcon from '@mui/icons-material/Bed';
 import BathtubIcon from '@mui/icons-material/Bathtub';
 import CropSquareIcon from '@mui/icons-material/CropSquare';
+import { useNavigate } from 'react-router-dom';
 const properties = [
   {
     id: 1,
@@ -35,7 +36,12 @@ const properties = [
   },
 ];
 
+
 function HotPropertiesList({properties, type}) {
+  const navigate = useNavigate()
+  const handleDetailPage = (id) => {
+    navigate(`/home-details/${id}`)
+  }
   return (
     <Box sx={{ padding: '16px', flex: 1, marginTop: '4%' }}>
           <Typography 
@@ -48,13 +54,13 @@ function HotPropertiesList({properties, type}) {
         {type === 1 ? 'Danh sách các bất động sản đang cho thuê hot hiện nay' : `Danh sách các bất động sản đang bán hot hiện nay`}
       </Typography>
       <Grid container spacing={2}>
-        {properties.slice(0, 4).map((property) => (
+        { properties && properties.slice(0, 4).map((property) => (
           <Grid item xs={12} key={property.id}>
-            <Card sx={{ display: 'flex' }}>
+            <Card sx={{ display: 'flex', cursor: "pointer" }} onClick={() => handleDetailPage(properties.id)}>
               <CardMedia
                 component="img"
                 sx={{ width: 151 }}
-                image={property.image && property.image.length > 0 ? property.image.split(';')[0] : "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"}
+                image={property.image && property.image.length > 0 ? `http://localhost:3000/images/${property.image.split(';')[0]}` : "https://images.unsplash.com/photo-1591474200742-8e512e6f98f8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGx1eHVyeSUyMGhvdXNlfGVufDB8fDB8fHww"}
                 alt={property.title}
               />
                  <Box 
@@ -70,8 +76,10 @@ function HotPropertiesList({properties, type}) {
         variant="h6" 
         sx={{ 
           fontWeight: 'bold', 
-          marginBottom: '8px' 
+          marginBottom: '8px' ,
+           cursor: "pointer"
         }}
+        onClick={() => handleDetailPage(properties.id)}
       >
        {property.title}
       </Typography>

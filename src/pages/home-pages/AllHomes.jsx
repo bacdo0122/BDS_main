@@ -16,7 +16,7 @@ import { Box, Typography, Button } from '@mui/material';
 const searchValuesInitialState = {
     city: 'Tất cả huyện',
     direction: 'Tất cả hướng',
-    neighborhood: 'Tất cả quận',
+    neighborhood: 'Tất cả xã',
     minPrice: '',
     maxPrice: '',
     category: ''
@@ -140,7 +140,7 @@ export default function AllHomes() {
                 if(resDistrict.data?.data.length > 0 && searchValues.neighborhood){
                     setDistricts(resDistrict.data?.data.filter(district => district.ward.find(item => item.name === searchValues.neighborhood)));
                 } 
-                if(resDistrict.data?.data.length > 0 && searchValues.neighborhood === "Tất cả quận"){
+                if(resDistrict.data?.data.length > 0 && searchValues.neighborhood === "Tất cả xã"){
                     setDistricts(resDistrict.data.data);
                 }
                 setSearchValues({...searchValues, city: 'Tất cả huyện'})
@@ -176,15 +176,12 @@ export default function AllHomes() {
     function handleSubmitResult(e) {
         e.preventDefault();
         const holeData = [...data];
-        console.log("holeData:", holeData, searchValues)
-        const filteredByNeighborhood = searchValues.neighborhood.length && searchValues.neighborhood !== 'Tất cả quận'
+        const filteredByNeighborhood = searchValues.neighborhood.length && searchValues.neighborhood !== 'Tất cả xã'
             ? holeData.filter((home) => home.region.ward.name.toLowerCase() == searchValues.neighborhood.toLowerCase())
             : holeData
-            console.log("filteredByNeighborhood:",filteredByNeighborhood )
         const filteredByCity = searchValues.city.length && searchValues.city !== 'Tất cả huyện'
             ? filteredByNeighborhood.filter((home) => home.region.ward.district.name.toLowerCase() == searchValues.city.toLowerCase())
             : filteredByNeighborhood
-            console.log("filteredByCity:",filteredByCity )
         const filteredByDirection = searchValues.direction.length && searchValues.direction !== 'Tất cả hướng'
         ? filteredByCity.filter((home) => home.direction.name.toLowerCase() == searchValues.direction.toLowerCase())
         : filteredByCity
@@ -219,7 +216,7 @@ export default function AllHomes() {
             <section className="home-search">
                 <form onSubmit={handleSubmitResult}>
                     <select name="neighborhood" value={searchValues.neighborhood} onChange={handleSearchChange}>
-                    <option id="all">Tất cả quận</option>
+                    <option id="all">Tất cả xã</option>
                         {wards && wards.map(ward => {
                             return <option id={ward.name}>{ward.name}</option>
                         })}
@@ -244,20 +241,6 @@ export default function AllHomes() {
                             return <option id={category.name}>{category.name}</option>
                         })}
                     </select>
-                    {/* <input
-                        name="city"
-                        placeholder="District"
-                        value={searchValues.city}
-                        type="text"
-                        onChange={handleSearchChange}
-                    /> */}
-                    {/* <input
-                        name="neighborhood"
-                        placeholder="Ward"
-                        value={searchValues.neighborhood}
-                        type="text"
-                        onChange={handleSearchChange}
-                    /> */}
                     <input
                         name="minPrice"
                         placeholder="Giá nhỏ nhất"

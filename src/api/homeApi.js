@@ -14,6 +14,14 @@ export const fetchAllHomes = (pageNumber, type) => {
         });
 };
 
+export const fetchAllTypes = () => {
+    return fetch(`${hostUrl}/typeListing?page=1&limit=1000`)
+        .then((resp) => resp.json())
+        .then((json) => {
+            return json.data;
+        });
+};
+
 export const fetchPaginatedHomes = (page, rowsPerPage) => {
     return fetch(`${hostUrl}/homes/${page}/${rowsPerPage}`)
         .then((resp) => resp.json())
@@ -26,7 +34,6 @@ export const postHome = async (homeInfo, userId) => {
     const postBody = { ...homeInfo, owner_id: userId };
     try {
         const res = await HOME_API.post(`/home`, postBody);
-        console.log(res);
         return { error: null, ...res };
     } catch (error) {
         console.log(error);
@@ -36,6 +43,28 @@ export const postHome = async (homeInfo, userId) => {
 
 export const fetchHomeDetails = async (homeId) => {
     const resp = await fetch(`${hostUrl}/listing/getOne?id=${homeId}`);
+    return resp;
+};
+
+export const fetchNews = async (newsCategoryId) => {
+    console.log("newsCategoryId:", newsCategoryId)
+    const resp = newsCategoryId === 'all' ? await fetch(`${hostUrl}/news?page=1&limit=10`) 
+    : await fetch(`${hostUrl}/news?page=1&limit=10&category=${newsCategoryId}`);
+    return resp;
+};
+
+export const fetchNewsDetails = async (id) => {
+    const resp = await fetch(`${hostUrl}/news/getOne?id=${id}`) 
+    return resp;
+};
+
+export const fetchNewsCategory = async () => {
+    const resp = await fetch(`${hostUrl}/categoryNews?page=1&limit=100`);
+    return resp;
+};
+
+export const fetchHomeDetailsSuggestion = async (id) => {
+    const resp = await fetch(`${hostUrl}/listing?page=1&limit=4&type_id=${id}`);
     return resp;
 };
 
