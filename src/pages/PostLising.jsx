@@ -119,9 +119,9 @@ useEffect(getUserDetail, [user]);
         legal_status: Boolean(listing.legal_status),
         furnishing: Boolean(listing.furnishing),
       })
-      toast.info("created listing successfully!")
+      toast.info("Đăng tin rao thành công! Đợi chấp thuận từ quản trị viên!")
     } catch (error) {
-      toast.error("wrong info!")
+      toast.error("Sai thông tin ! Nhập lại!")
     }
   }
 
