@@ -66,16 +66,15 @@ const NewsDetail = () => {
   if (!news) {
     return <p>Article not found!</p>;
   }
-  console.log("news:", news)
   return (
     <div style={{display: 'flex'}}>
     <NewsCategories newsCategory={newsCategory} handleChangeCategory={handleChangeCategory}/>
     <div style={styles.container}>
       <h1 style={styles.title}>{news.title}</h1>
       <p style={styles.date}>{news.createAt}</p>
-      <img src={`http://localhost:3000/images/${news.image.split(';')[0]}` || 'https://media.batdongsan.vn/crop/200x150/news/94551cadb4ef5db104fe.jpg'} alt={news.title} style={styles.image} />
+      <img src={`http://localhost:3000/images/${news.image?.split(';')[0]}` || 'https://media.batdongsan.vn/crop/200x150/news/94551cadb4ef5db104fe.jpg'} alt={news.title} style={styles.image} />
       <span>
-      {news.content?.split('\n').map((paragraph, index) => (
+      {news.content?.split(/\\n|\n/).map((paragraph, index) => (
         <p key={index} style={styles.content}>{paragraph}</p>
       ))}
 

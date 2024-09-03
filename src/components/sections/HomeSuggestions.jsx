@@ -6,7 +6,7 @@ const HomeSuggestions = ({ homeId }) => {
     const [suggestions, setSuggestions] = useState([]);
 
     const fetchSuggestingHome = () => {
-        fetch(`http://localhost:3000/listing?page=1&limit=4&type_id=${type}`)
+        fetch(`http://localhost:3000/listing?page=1&limit=4&type_id=${type}&status=done`)
             .then((res) => res.json())
             .then((data) => {
                 if (data === "No results.") return

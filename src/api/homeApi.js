@@ -7,7 +7,7 @@ export const HOME_API = axios.create({
 });
 
 export const fetchAllHomes = (pageNumber, type) => {
-    return fetch(`${hostUrl}/listing?page=${pageNumber}&limit=12&type_id=${type}`)
+    return fetch(`${hostUrl}/listing?page=${pageNumber}&limit=12&type_id=${type}&status=done`)
         .then((resp) => resp.json())
         .then((json) => {
             return json.data;
@@ -16,6 +16,60 @@ export const fetchAllHomes = (pageNumber, type) => {
 
 export const fetchAllTypes = () => {
     return fetch(`${hostUrl}/typeListing?page=1&limit=1000`)
+        .then((resp) => resp.json())
+        .then((json) => {
+            return json.data;
+        });
+};
+
+export const fetchCategory = () => {
+    return fetch(`${hostUrl}/categoryListing?page=1&limit=1000`)
+        .then((resp) => resp.json())
+        .then((json) => {
+            return json.data;
+        });
+};
+
+export const fetchDirection = () => {
+    return fetch(`${hostUrl}/direction?page=1&limit=1000`)
+        .then((resp) => resp.json())
+        .then((json) => {
+            return json.data;
+        });
+};
+
+export const fetchCreateListing = async (postBody) => {
+    console.log("postBody:", postBody)
+    const response = await fetch(`${hostUrl}/listing/create`, {
+        method: "POST",
+        body: JSON.stringify(postBody),
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    const json = await response.json();
+    return json
+};
+
+export const fetchRegion = () => {
+    return fetch(`${hostUrl}/region?page=1&limit=1000`)
+        .then((resp) => resp.json())
+        .then((json) => {
+            return json.data;
+        });
+};
+
+export const fetchDistrict = () => {
+    return fetch(`${hostUrl}/district?page=1&limit=1000`)
+        .then((resp) => resp.json())
+        .then((json) => {
+            return json.data;
+        });
+};
+
+export const fetchWard = () => {
+    return fetch(`${hostUrl}/ward?page=1&limit=1000`)
         .then((resp) => resp.json())
         .then((json) => {
             return json.data;
@@ -64,7 +118,7 @@ export const fetchNewsCategory = async () => {
 };
 
 export const fetchHomeDetailsSuggestion = async (id) => {
-    const resp = await fetch(`${hostUrl}/listing?page=1&limit=4&type_id=${id}`);
+    const resp = await fetch(`${hostUrl}/listing?page=1&limit=4&type_id=${id}&status=done`);
     return resp;
 };
 
@@ -85,6 +139,6 @@ export const fetchUserDetails = async (accessToken) => {
     return data;
 };
 export const fetchProperty = async () => {
-    const resp = await fetch(`${hostUrl}/listing?page=1&limit=1000`);
+    const resp = await fetch(`${hostUrl}/listing?page=1&limit=1000&status=done`);
     return resp;
 };

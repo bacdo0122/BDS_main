@@ -24,3 +24,12 @@ export const createUser = async (postBody) => {
     const json = await response.json();
     return json
 }
+
+export const getListingsUser = async (userID) => {
+    const response = await fetch(`http://localhost:3000/listing?page=1&limit=100&userId=${userID}`, {
+        method: "GET"
+    });
+
+    const json = await response.json();
+    return json
+}

@@ -83,7 +83,6 @@ export default function Header() {
     const handleLinkClick = () => {
         setIsActive(false);
     };
-
     return (
         <header className={styles.header}>
             <article className={styles.siteName}>
@@ -128,11 +127,15 @@ export default function Header() {
                         </Link>
                     </li>
                     <UserNav handleLinkClick={handleLinkClick} location={location}/>
-                    <li>
-                        <Link onClick={handleLinkClick} to="/post-listing" style={location.pathname === '/post-listing' ? {color: "#fff", background: "#3D52A0"} : {}}>
-                            Đăng tin rao
-                        </Link>
-                    </li>
+
+    {JSON.parse(localStorage.getItem("user"))?.accessToken &&
+    
+    <li>
+    <Link onClick={handleLinkClick} to="/post-listing" style={location.pathname === '/post-listing' ? {color: "#fff", background: "#3D52A0"} : {}}>
+        Đăng tin rao
+    </Link>
+</li>
+    }
                 </ul>
             </nav>
         </header>

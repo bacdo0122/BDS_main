@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -13,12 +13,41 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { fetchAllTypes } from '../api/homeApi';
+import { fetchAllTypes, fetchCategory, fetchCreateListing, fetchDirection, fetchDistrict, fetchRegion, fetchUserDetails, fetchWard } from '../api/homeApi';
+import { UserContext } from "../context/UserProvider";
+import { toast } from "react-toastify";
 const PostListing = () => {
   const [bedrooms, setBedrooms] = useState(1);
   const [bathrooms, setBathrooms] = useState(1);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [types, setTypes] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [region, setRegion] = useState([]);
+  const [category, setCategory] = useState([]);
+  const [direction, setDirection] = useState([]);
+  const [listing, setListing] = useState({
+    type: '',
+    category: '',
+    regionId: '',
+    userId: '',
+    title: '',
+    description: '',
+    address: '',
+    area: '',
+    bedrooms: 1,
+    price: '0',
+    pricePerArea: '0',
+    bathrooms: 1,
+    district: '',
+    ward: '',
+    legal_status: '',
+    orientation: '',
+    furnishing: '',
+    status: 'pending',
+    direction: '',
+    images: ''
+  });
 
   const handleFileChange = (event) => {
     if (event.target.files) {
@@ -29,18 +58,73 @@ const PostListing = () => {
   const getTypes = () => {
     fetchAllTypes()
           .then((json) => {
-            console.log("json:", json)
             setTypes(json);
           });
   }; 
 
+  const getCategory = () => {
+    fetchCategory()
+          .then((json) => {
+            setCategory(json);
+          });
+  }; 
+
+  const getDirection = () => {
+    fetchDirection()
+          .then((json) => {
+            setDirection(json);
+          });
+  }; 
+
+  const getRegion = async () => {
+    const res = await Promise.all([fetchDistrict(), fetchRegion(), fetchWard()]);
+    setDistricts(res[0]);
+    setRegion(res[1]);
+    setWards(res[2]);
+  }; 
+
   
   useEffect(() => {
-    getTypes()
+    getTypes();
+    getRegion();
+    getCategory();
+    getDirection();
   }, [])
+  const [userDetails, setUserDetails] = useState({});
+  const { user } = useContext(UserContext);
+  const getUserDetail = () => {
+    if(user.accessToken){
+    fetchUserDetails(user.accessToken)
+    .then((data) => {
+        setUserDetails(data);
+    });
+   }
+};
 
+useEffect(getUserDetail, [user]);
+  const hanldeCreateListing = async () => {
+    try {
+      const regionId = region.find(item => item.ward.name === listing.ward && item.ward.district.name === listing.district)
+      await fetchCreateListing({...listing,
+        image:selectedFiles.map(item => item.name).join(";"),
+        bedrooms: Number(bedrooms),
+        bathrooms: Number(bathrooms),
+        direction_id: listing.direction,
+        category_id: listing.category,
+        type_id: listing.type,
 
-  console.log("types:", types)
+        regionId: regionId?.id,
+        userId: userDetails?.id,
+        pricePerArea: Number(listing.pricePerArea),
+        legal_status: Boolean(listing.legal_status),
+        furnishing: Boolean(listing.furnishing),
+      })
+      toast.info("created listing successfully!")
+    } catch (error) {
+      toast.error("wrong info!")
+    }
+  }
+
   return (
     <Box sx={{ maxWidth: 800, margin: "auto", padding: 2, color: "#fff" }}>
       {/* Thông tin cơ bản */}
@@ -54,9 +138,18 @@ const PostListing = () => {
         {/* Loại bất động sản */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel style={{ color: "#fff" }}>Loại bất động sản</InputLabel>
-          <Select label="Loại bất động sản">
+          <Select label="Loại bất động sản" value={listing.type} onChange={(e) => setListing({...listing, type: e.target.value})}>
             {types.length > 0 && types.map(item => {
-              return <MenuItem value={item.name}>{item.description}</MenuItem>
+              return <MenuItem value={item.id}>{item.description}</MenuItem>
+            })}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel style={{ color: "#fff" }}>Chuyên mục bất động sản</InputLabel>
+          <Select label="Loại bất động sản" value={listing.category} onChange={(e) => setListing({...listing, category: e.target.value})}>
+            {category.length > 0 && category.map(item => {
+              return <MenuItem value={item.id}>{item.description}</MenuItem>
             })}
           </Select>
         </FormControl>
@@ -65,21 +158,26 @@ const PostListing = () => {
         <Box sx={{ display: "flex", gap: 2 }}>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel style={{ color: "#fff" }}>Quận, huyện</InputLabel>
-            <Select label="Quận, huyện">
-              <MenuItem value="cau_giay">Cầu Giấy</MenuItem>
-              <MenuItem value="dong_da">Đống Đa</MenuItem>
+            <Select label="Quận, huyện" value={listing.district} onChange={(e) => {
+              setListing({...listing, district: e.target.value})
+            }} >
+              {districts.length > 0 && districts.map(item => {
+              return <MenuItem value={item.name}>{item.name}</MenuItem>
+            })}
             </Select>
           </FormControl>
           <FormControl fullWidth sx={{ mb: 2 }}>
             <InputLabel style={{ color: "#fff" }}>Phường, xã</InputLabel>
-            <Select label="Phường, xã">
-              <MenuItem value="dich_vong">Dịch Vọng</MenuItem>
-              <MenuItem value="nghia_do">Nghĩa Đô</MenuItem>
+            <Select label="Phường, xã" value={listing.ward} onChange={(e) => setListing({...listing, ward: e.target.value})}>
+            {wards.length > 0 && wards.map(item => {
+              return <MenuItem value={item.name}>{item.name}</MenuItem>
+            })}
+           
             </Select>
           </FormControl>
         </Box>
 
-        <TextField
+        <TextField value={listing.address} onChange={(e) => setListing({...listing, address: e.target.value})}
           fullWidth
           label="Địa chỉ hiện thị trên tin đăng"
           variant="outlined"
@@ -107,7 +205,7 @@ const PostListing = () => {
         </Typography>
         <Divider sx={{ my: 2 }} />
 
-        <TextField
+        <TextField value={listing.title} onChange={(e) => setListing({...listing, title: e.target.value})}
           fullWidth
           label="Tiêu đề"
           variant="outlined"
@@ -123,7 +221,7 @@ const PostListing = () => {
             },
           }}
         />
-        <TextField
+        <TextField value={listing.description} onChange={(e) => setListing({...listing, description: e.target.value})}
           fullWidth
           label="Mô tả"
           variant="outlined"
@@ -149,7 +247,7 @@ const PostListing = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Diện tích */}
-        <TextField
+        <TextField value={listing.area} onChange={(e) => setListing({...listing, area: e.target.value})}
           fullWidth
           label="Diện tích (m²)"
           variant="outlined"
@@ -167,9 +265,47 @@ const PostListing = () => {
         />
 
         {/* Mức giá */}
-        <TextField
+        <TextField value={listing.price} onChange={(e) => setListing({...listing, price: e.target.value})}
           fullWidth
-          label="Mức giá (VNĐ)"
+          label={listing.type === 1 ? "Giá cho thuê (triệu / m2)" : "Giá bán (tỷ)"}
+          variant="outlined"
+          sx={{
+            mb: 2,
+            "& label": {
+              color: "#fff", // Màu của label mặc định
+            },
+          }}
+          InputProps={{
+            style: {
+              color: "#fff", // Màu văn bản
+            },
+          }}
+        />
+
+        {/* Mức giá moi m2 */}
+        { listing.type === 2 &&
+          <TextField value={listing.pricePerArea} onChange={(e) => setListing({...listing, pricePerArea: e.target.value})}
+          fullWidth
+          label="Giá mỗi m2"
+          variant="outlined"
+          sx={{
+            mb: 2,
+            "& label": {
+              color: "#fff", // Màu của label mặc định
+            },
+          }}
+          InputProps={{
+            style: {
+              color: "#fff", // Màu văn bản
+            },
+          }}
+        />
+        }
+
+        {/* Tiện nghi */}
+        <TextField value={listing.orientation} onChange={(e) => setListing({...listing, orientation: e.target.value})}
+          fullWidth
+          label="Tiện nghi"
           variant="outlined"
           sx={{
             mb: 2,
@@ -187,10 +323,9 @@ const PostListing = () => {
         {/* Giấy tờ pháp lý */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel style={{ color: "#fff" }}>Giấy tờ pháp lý</InputLabel>
-          <Select label="Giấy tờ pháp lý">
-            <MenuItem value="so_do">Sổ đỏ</MenuItem>
-            <MenuItem value="so_hong">Sổ hồng</MenuItem>
-            <MenuItem value="giay_to_khac">Giấy tờ khác</MenuItem>
+          <Select label="Giấy tờ pháp lý" value={listing.legal_status} onChange={(e) => setListing({...listing, legal_status: e.target.value})}>
+            <MenuItem value="true">Có sổ</MenuItem>
+            <MenuItem value="false">Không có sổ</MenuItem>
           </Select>
         </FormControl>
 
@@ -202,7 +337,7 @@ const PostListing = () => {
           <IconButton onClick={() => setBedrooms((pre) => --pre)}>
             <RemoveIcon />
           </IconButton>
-          <TextField
+          <TextField 
             type="number"
             value={bedrooms}
             onChange={(e) => setBedrooms(parseInt(e.target.value))}
@@ -237,33 +372,21 @@ const PostListing = () => {
         {/* Hướng nhà */}
         <FormControl fullWidth sx={{ mb: 2 }}>
           <InputLabel style={{ color: "#fff" }}>Hướng nhà</InputLabel>
-          <Select label="Hướng nhà">
-            <MenuItem value="dong">Đông</MenuItem>
-            <MenuItem value="tay">Tây</MenuItem>
-            <MenuItem value="nam">Nam</MenuItem>
-            <MenuItem value="bac">Bắc</MenuItem>
+          <Select label="Hướng nhà" value={listing.direction} onChange={(e) => setListing({...listing, direction: e.target.value})}>
+            {direction.length > 0 && direction.map(item => {
+            return  <MenuItem value={item.id}>{item.name}</MenuItem>
+            })}
           </Select>
         </FormControl>
 
         {/* Nội thất */}
-        <TextField
-          fullWidth
-          label="Nội thất"
-          variant="outlined"
-          multiline
-          rows={4}
-          sx={{
-            mb: 2,
-            "& label": {
-              color: "#fff", // Màu của label mặc định
-            },
-          }}
-          InputProps={{
-            style: {
-              color: "#fff", // Màu văn bản
-            },
-          }}
-        />
+        <FormControl fullWidth sx={{ mb: 2 }}>
+          <InputLabel style={{ color: "#fff" }}>Nội thất</InputLabel>
+          <Select label="Nội thất" value={listing.furnishing} onChange={(e) => setListing({...listing, furnishing: e.target.value})}>
+            <MenuItem value="true">Đã có nội thất</MenuItem>
+            <MenuItem value="false">Chưa có nội thất</MenuItem>
+          </Select>
+        </FormControl>
 
         {/* Hình ảnh */}
         <Box mb={3}>
@@ -294,7 +417,7 @@ const PostListing = () => {
         </Box>
       </Box>
 
-      <Button variant="contained" color="primary">
+      <Button variant="contained" color="primary" onClick={hanldeCreateListing}>
         Gửi
       </Button>
     </Box>

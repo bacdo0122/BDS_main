@@ -25,7 +25,6 @@ const searchValuesInitialState = {
 export default function AllHomes() {
     const [pageNumber, setPageNumber] = useState(1);
     const queryClient = useQueryClient();
-    const homesPerPage = 10;
     const location = useLocation();
     const typeQuery = location.pathname === '/all-rent' ? 1 : 2
     const [isLongLoading, setIsLongLoading] = useState(false);
@@ -191,9 +190,11 @@ export default function AllHomes() {
         const filteredBymaxPrice =  searchValues.maxPrice.length
             ? filteredLowerPrice.filter((home) => parseFloat(home.price) < Number(searchValues.maxPrice))
             : filteredLowerPrice;
-
+            const filteredByCategory =  searchValues.category.length && searchValues.category != 'Tất cả chuyên mục'
+            ? filteredBymaxPrice.filter((home) => home.category.name == searchValues.category)
+            : filteredBymaxPrice;
             const filteredBySortBy =  searchValues.sortBy !== 'None'
-            ? filteredBymaxPrice.sort((a, b) => {
+            ? filteredByCategory.sort((a, b) => {
                 if(searchValues.sortBy  === 'Price_Inc'){
                    return a.price - b.price
                 } else if(searchValues.sortBy  === 'Price_Dec'){
@@ -205,7 +206,6 @@ export default function AllHomes() {
             : [];
 
         const finalFiltered = filteredBySortBy;
-        console.log(finalFiltered);
         setFirstLoading(false);
         setSearchResult(finalFiltered.length ? finalFiltered : []);
     }
@@ -235,7 +235,7 @@ export default function AllHomes() {
                         })}
                     </select>
 
-                    <select name="holeData" value={searchValues.category}  onChange={handleSearchChange}>
+                    <select name="category" value={searchValues.category}  onChange={handleSearchChange}>
                     <option >Tất cả chuyên mục</option>
                         {categories && categories.map(category => {
                             return <option id={category.name}>{category.name}</option>

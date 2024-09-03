@@ -58,6 +58,7 @@ export default function HomeDetails() {
 
     useEffect(getHomeSuggestion, [homeDetails]);
 
+    console.log("a:", homeDetails)
     return (
         <section className={styles.homeDetails}>
             <section className={styles.topSection}>
@@ -115,7 +116,7 @@ export default function HomeDetails() {
                     <article>
                         <h2>Description</h2>
                         <hr />
-                        <p>{homeDetails && homeDetails.description}</p>
+                        <p dangerouslySetInnerHTML={{ __html: homeDetails.description.replace(/\\n|\n/g, '<br>') }}></p>
                     </article>
                 </article>
                 <article className={styles.share}>
